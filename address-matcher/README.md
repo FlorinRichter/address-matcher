@@ -1,14 +1,22 @@
 # Address Matcher
 
-A Python tool to find the best matching addresses between two CSV files using fuzzy string matching.
+A Python tool to find the best matching addresses between two CSV files using fuzzy string matching. Available both as a command-line tool and a web application.
 
 ## Requirements
 
+For local development:
 - Python 3.7+
 - pandas
 - rapidfuzz
+- flask (for web interface)
 
-## Installation
+OR
+
+- Docker (for containerized usage)
+
+## Installation & Usage
+
+### Option 1: Local Installation
 
 Install the required packages:
 
@@ -16,24 +24,37 @@ Install the required packages:
 pip install -r requirements.txt
 ```
 
-## Usage
+### Option 2: Docker (Recommended for cross-platform use)
 
-The script expects two input CSV files with the following columns:
-- QuoteID
-- InsurableEntity-ID
-- Address
-
-To run the script:
-
+1. Build the Docker image:
 ```bash
-python address_matcher.py input1.csv input2.csv output.csv [--min-similarity SCORE]
+docker build -t address-matcher .
 ```
 
-Arguments:
-- `input1.csv`: First CSV file
-- `input2.csv`: Second CSV file to match against
-- `output.csv`: Where to save the results
-- `--min-similarity`: Optional minimum similarity score (0-100) to consider a match (default: 80.0)
+2. Run the container:
+```bash
+docker run -p 5000:5000 address-matcher
+```
+
+3. Open your web browser and visit: http://localhost:5000
+
+## Web Interface Usage
+
+1. Visit the web interface in your browser
+2. Upload two CSV files with the following required columns:
+   - QuoteID
+   - InsurableEntity-ID
+   - Address
+3. Set your minimum similarity score (0-100)
+4. Click "Match Addresses" to get your results
+
+## Command Line Usage
+
+If you prefer using the command line version:
+
+```bash
+python address_matcher.py input1.csv input2.csv output.csv --min-similarity 80
+```
 
 ## Output
 
