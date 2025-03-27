@@ -1,5 +1,0 @@
-QuoteID_1,IE_ID_1,Address_1,QuoteID_2,IE_ID_2,Address_2,Similarity
-Q001,IE001,"123 Main St, New York, NY 10001",Q101,IE101,"123 Main Street, New York, NY 10001",93.93939393939394
-Q003,IE003,"789 Pine Road, Los Angeles, CA 90001",Q103,IE103,"789 Pine Rd, Los Angeles, California 90001",84.61538461538461
-Q002,IE002,"456 Oak Avenue, Chicago, IL 60601",Q102,IE102,"456 Oak Ave, Chicago, Illinois 60601",84.05797101449275
-Q005,IE005,"159 Cedar Street, Miami, FL 33101",Q105,IE105,"159 Cedar St, Miami, Florida 33101",83.5820895522388
