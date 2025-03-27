@@ -5,8 +5,8 @@ from typing import Tuple
 
 def load_csv(file_path: str) -> pd.DataFrame:
     """Load CSV file and validate required columns."""
-    df = pd.read_csv(file_path, sep=';')
-    required_columns = {'QuoteID', 'InsurableEntity-ID', 'address'}
+    df = pd.read_csv(file_path, sep=';', encoding='iso-8859-1')
+    required_columns = {'submissionBaseNr', 'submissionId', 'insurableEntityId', 'address'}
     if not all(col in df.columns for col in required_columns):
         raise ValueError(f"CSV must contain columns: {required_columns}")
     return df
@@ -14,10 +14,21 @@ def load_csv(file_path: str) -> pd.DataFrame:
 def find_best_matches(df1: pd.DataFrame, df2: pd.DataFrame) -> pd.DataFrame:
     """Find best address matches between two dataframes using fuzzy matching."""
     # Create a dictionary of addresses from df2 for faster lookup
-    df2_addresses = dict(zip(df2.index, df2['address']))
+    df2_by_baseNr = df2.groupby('submissionBaseNr').apply(lambda x: dict(zip(x.index, x['address']))).to_dict()
     
     # Function to find best match for each address
-    def find_match(address: str) -> Tuple[str, float, int]:
+    def find_match(row) -> Tuple[str, float, int]:
+        baseNr = row['submissionBaseNr']
+        address = row['address']
+
+        #Only compare addresses with the same submissionBaseNr
+        if baseNr not in df2_by_baseNr:
+            return None, 0, -1
+
+        df2_addresses = df2_by_baseNr[baseNr]
+        if not df2_addresses:
+            return None, 0, -1
+
         match = process.extractOne(
             address,
             df2_addresses,
@@ -25,16 +36,16 @@ def find_best_matches(df1: pd.DataFrame, df2: pd.DataFrame) -> pd.DataFrame:
         )
         if match:
             matched_idx, score = match[2], match[1]
-            return df2.loc[matched_idx, 'InsurableEntity-ID'], score, matched_idx
+            return df2.loc[matched_idx, 'insurableEntityId'], score, matched_idx
         return None, 0, -1
 
     # Apply matching to each row in df1
-    results = [find_match(addr) for addr in df1['address']]
+    results = [find_match(row) for _, row in df1.iterrows()]
     
     # Create result DataFrame
     result_df = pd.DataFrame({
-        'Source_QuoteID': df1['QuoteID'],
-        'Source_IE_ID': df1['InsurableEntity-ID'],
+        'Source_QuoteID': df1['submissionBaseNr'],
+        'Source_IE_ID': df1['insurableEntityId'],
         'Source_Address': df1['address'],
         'Matched_IE_ID': [r[0] for r in results],
         'Match_Score': [r[1] for r in results],
@@ -48,7 +59,7 @@ def main():
     parser.add_argument('csv1', help='Path to first CSV file')
     parser.add_argument('csv2', help='Path to second CSV file')
     parser.add_argument('output', help='Path to output CSV file')
-    parser.add_argument('--min-score', type=float, default=70,
+    parser.add_argument('--min-score', type=float, default=90,
                        help='Minimum matching score (0-100)')
     
     args = parser.parse_args()
