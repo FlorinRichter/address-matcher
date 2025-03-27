@@ -1,0 +1,5 @@
+Source_QuoteID,Source_IE_ID,Source_Address,Matched_IE_ID,Match_Score,Matched_Address
+Q001,IE001,"123 Main St, New York, NY 10001",IE101,93.93939393939394,"123 Main Street, New York, NY 10001"
+Q002,IE002,"456 Oak Avenue, Chicago, IL 60601",IE102,84.05797101449275,"456 Oak Ave, Chicago, Illinois 60601"
+Q003,IE003,"789 Pine Road, Los Angeles, CA 90001",IE103,84.61538461538461,"789 Pine Rd, Los Angeles, California 90001"
+Q005,IE005,"159 Cedar Street, Miami, FL 33101",IE105,83.5820895522388,"159 Cedar St, Miami, Florida 33101"
